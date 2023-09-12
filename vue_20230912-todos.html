@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代辦事項 - ToDos</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/my.css">
+    <style>
+        .completed {
+            text-decoration: line-through;
+            color: var(--color02);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 mt-5">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1">代辦事項</span>
+                        <input type="text" class="form-control" v-model="newTodo">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon2"
+                            v-on:click="addTodo()">Button</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link" aria-current="page" href="#" v-on:click=" visibility = '全部' "
+                                        v-bind:class="{ 'active' : visibility == '全部' }">全部</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" v-on:click=" visibility = '進行中' "
+                                        v-bind:class="{ 'active' : visibility == '進行中' }">進行中</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" v-on:click=" visibility = '已完成' "
+                                        v-bind:class="{ 'active' : visibility == '已完成' }">已完成</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item" v-for="(item, key) in filterTodo">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value=""
+                                                id="" v-model="item.completed">
+                                            <label class="form-check-label" v-bind:class="{'completed':item.completed}"
+                                                for="">
+                                                {{ item.title }}
+                                            </label>
+                                        </div>
+                                        <button type="button" class="btn-close btn-close-dark" aria-label="Close"
+                                            v-on:click="removeTodo(item)"></button>
+                                    </div>
+
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <span>還有XX筆任務未完成</span>
+                            <a href="#">清除所有任務</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    newTodo: '吃早餐',
+                    visibility: '全部',
+                    todos: [
+                        {
+                            id: '001',
+                            title: '線上學習',
+                            completed: false
+                        },
+                        {
+                            id: '002',
+                            title: '吃早餐',
+                            completed: false
+                        },
+                        {
+                            id: '003',
+                            title: '吃午餐',
+                            completed: false
+                        },
+                        {
+                            id: '004',
+                            title: '吃晚餐',
+                            completed: false
+                        }
+                    ]
+                }
+            },
+            methods: {
+                addTodo() {
+                    console.log(Date.now());
+                    const timestamp = Date.now();
+                    const mytitle = this.newTodo.trim();
+                    // trim() 將空白刪除
+                    if (!mytitle) {
+                        return;
+                    }
+                    // 如果沒有輸入，不做任何動作
+
+                    this.todos.push({
+                        id: timestamp,
+                        title: mytitle,
+                        completed: false
+                    });
+
+                    this.newTodo = '';
+                    // 輸入完後，清空
+                },
+
+                removeTodo(todo) {
+                    const vm = this;
+                    const newIndex = vm.todos.findIndex((item, index) => {
+                        return todo.id == item.id
+                    });
+                    vm.todos.splice(newIndex, 1);
+                },
+            },
+
+            computed: {
+                filterTodo() {
+                    const vm = this;
+                    if (vm.visibility == '全部') {
+                        return vm.todos;
+                    } else if (vm.visibility == '進行中') {
+                        const activeTodo = [];
+                        vm.todos.forEach((item, key) => {
+                            if (!item.completed) {
+                                activeTodo.push(item);
+                            }
+                        });
+                        return activeTodo;
+                    } else if (vm.visibility == '已完成') {
+                        const completedTodo = [];
+                        vm.todos.forEach((item, key) => {
+                            if (item.completed) {
+                                completedTodo.push(item);
+                            }
+                        });
+                        return completedTodo;
+                    }
+                }
+            }
+        }
+        Vue.createApp(App).mount('#app');
+    </script>
+</body>
+
+</html>

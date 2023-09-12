@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue</title>
+    <link rel="stylesheet" href="css/my.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        .box01 {
+            transition: transform 1s;
+        }
+
+        .rotate {
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="demo mb-3">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" v-on:click=" mylink = '台北市' "
+                        v-bind:class="{ 'active' : mylink == '台北市' }">台北市</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" v-on:click=" mylink = '台中市' "
+                        v-bind:class="{ 'active' : mylink == '台中市' }">台中市</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" v-on:click=" mylink = '台南市' "
+                        v-bind:class="{ 'active' : mylink == '台南市' }">台南市</a>
+                </li>
+            </ul>
+
+            <ul class="list-group">
+                <template v-for="(item, key) in list">
+                    <li class="list-group-item" v-if=" item.city == mylink">
+                        {{ item.city }} 地區 {{ item.product }} 一顆 {{ item.price }}
+                    </li>
+                </template>
+            </ul>
+        </div>
+
+        <!-- 反轉文字_methods的宣告 -->
+        <div class="demo mb-3">
+            <h2> 反轉文字_methods的宣告 </h2>
+            <input type="text" class="form-control" v-model="reverseTxtx" name="" id="" v-on:keyup.enter="rText()"
+                v-on:keyup.esc="canaelText">
+            <a href="#" class="btn btn-primary my-2" v-on:click="rText()"> 反轉 </a>
+            <h2>{{ r_Text }}</h2>
+            <h2>即時(computed)反轉文字{{ c_Text }}</h2>
+        </div>
+
+        <div class="demo mb-3">
+            <h2> class 綁定</h2>
+            <div class="box01" v-bind:class="{ 'rotate' : isRotate }"></div>
+            <hr class="my-4">
+            <a href="#" class="btn btn-primary" v-on:click="isRotate = !isRotate">旋轉</a>
+        </div>
+
+        <div class="demo mb-3">
+            <h2> computed 應用 </h2>
+            <div class="mb-3">
+                <label for="" class="form-label">體重</label>
+                <input type="number" class="form-control" v-model="weight">
+            </div>
+            <div class="mb-3">
+                <label for="" class="form-label">身高</label>
+                <input type="number" class="form-control" v-model="height">
+            </div>
+            <a href="#" class="btn btn-primary" v-on:click.prevent="cal_bmi()">計算BMI</a>
+            <h2>BMI = {{ BMI }}</h2>
+            <h2>(即時 computed)BMI = {{ c_bmi }}</h2>
+        </div>
+
+        <div class="demo">
+            <h2> 常用表單 input 練習 </h2>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" v-model="checkbox">
+                <label class="form-check-label" for="flexCheckDefault">
+                    是否點餐
+                </label>
+            </div>
+            <div v-if="checkbox">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="陽春麵" id="" v-model="checkbox_array">
+                    <label class="form-check-label" for="">
+                        陽春麵
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="麻醬麵" id="" v-model="checkbox_array">
+                    <label class="form-check-label" for="">
+                        麻醬麵
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="炸醬麵" id="" v-model="checkbox_array">
+                    <label class="form-check-label" for="">
+                        炸醬麵
+                    </label>
+                </div>
+                <select class="form-select mt-3" aria-label="Default select example" v-model="spicy">
+                    <option disabled>辣度</option>
+                    <option value="正常辣">正常辣</option>
+                    <option value="微辣">微辣</option>
+                    <option value="不辣">不辣</option>
+                </select>
+                <hr>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="" id="" value="現金" v-model="radioPay">
+                    <label class="form-check-label" for="">
+                        現金
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="" id="" value="刷卡" v-model="radioPay">
+                    <label class="form-check-label" for="">
+                        刷卡
+                    </label>
+                </div>
+                <hr>
+                <h2>選購的餐點 : </h2>
+                <ul class="list-group">
+                    <li class="list-group-item" v-for="(item, key) in checkbox_array">
+                        {{ key+1 }}. {{ item }}
+                    </li>
+                    <h5> {{ spicy }} </h5>
+                </ul>
+                <h2>選擇支付方式 : {{ radioPay }} </h2>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const App = {
+            data() {
+                return {
+                    text01: 'hello',
+                    mylink: '台中市',
+                    reverseTxtx: '',
+                    r_Text: '',  // 文字反轉
+                    isRotate: false, // 紀錄是否旋轉
+                    weight: '',
+                    height: '',
+                    BMI: '',
+                    checkbox: false,
+                    checkbox_array: [],
+                    radioPay: '',
+                    spicy: '',
+                    list: [
+                        {
+                            product: '草莓',
+                            price: 150,
+                            city: '台北市',
+                        },
+                        {
+                            product: '草莓',
+                            price: 100,
+                            city: '台中市',
+                        },
+                        {
+                            product: '草莓',
+                            price: 50,
+                            city: '台南市',
+                        },
+                        {
+                            product: '香蕉',
+                            price: 75,
+                            city: '台北市',
+                        },
+                        {
+                            product: '香蕉',
+                            price: 50,
+                            city: '台中市',
+                        },
+                        {
+                            product: '香蕉',
+                            price: 25,
+                            city: '台南市',
+                        },
+                        {
+                            product: '西瓜',
+                            price: 125,
+                            city: '台北市',
+                        },
+                        {
+                            product: '西瓜',
+                            price: 75,
+                            city: '台中市',
+                        },
+                        {
+                            product: '西瓜',
+                            price: 25,
+                            city: '台南市',
+                        },
+                        {
+                            product: '葡萄',
+                            price: 600,
+                            city: '台北市',
+                        },
+                        {
+                            product: '葡萄',
+                            price: 300,
+                            city: '台中市',
+                        },
+                        {
+                            product: '葡萄',
+                            price: 150,
+                            city: '台南市',
+                        },
+                    ]
+                }
+            },
+
+            methods: {
+                rText() {
+                    this.r_Text = this.reverseTxtx.split('').reverse().join('');
+                    // split('') 轉成陣列
+                    // reverse() 反轉
+                    // join('')  陣列轉字串
+                },
+                canaelText() {
+                    this.r_Text = '';
+                    this.reverseTxtx = '';
+                },
+                cal_bmi() {
+                    height = this.height / 100;
+                    this.BMI = this.weight / (height * height);
+                }
+            },
+
+            computed: {
+                c_Text() {
+                    return this.reverseTxtx.split('').reverse().join('');
+                },
+                c_bmi() {
+                    height = this.height / 100;
+                    return this.weight / (height * height);
+                }
+
+            }
+        }
+        Vue.createApp(App).mount('#app')
+    </script>
+</body>
+
+</html>
